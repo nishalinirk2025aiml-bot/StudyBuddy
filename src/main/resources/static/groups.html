@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 
     <meta charset="UTF-8">
@@ -17,6 +18,8 @@
 <body>
 
 <div class="app">
+
+    <!-- ================= SIDEBAR ================= -->
 
     <aside class="sidebar">
 
@@ -43,6 +46,7 @@
                 ➕ Create Group
             </a>
 
+            <!-- Keep this as groups.html for now -->
             <a href="groups.html" class="sidebar-link">
                 📚 Subjects
             </a>
@@ -55,7 +59,7 @@
 
         <div class="sidebar-bottom">
 
-            <a href="index.html" class="sidebar-link">
+            <a href="#" class="sidebar-link" onclick="logoutUser(event)">
                 🚪 Logout
             </a>
 
@@ -64,52 +68,112 @@
     </aside>
 
 
+    <!-- ================= MAIN CONTENT ================= -->
+
     <main class="main-content">
 
         <header class="topbar">
 
             <div>
-                <h1>Find Study Groups 🔍</h1>
-                <p>Find the perfect group to learn together.</p>
+
+                <h1>
+                    Find Study Groups 🔍
+                </h1>
+
+                <p>
+                    Find the perfect group to learn together.
+                </p>
+
             </div>
 
         </header>
 
 
-        <!-- SEARCH -->
+        <!-- ================= SEARCH ================= -->
 
         <div class="search-box">
 
             <input
                     type="text"
                     id="searchInput"
-                    placeholder="Search study groups...">
+                    placeholder="Search study groups..."
+            >
 
             <select id="subjectFilter">
 
-                <option value="">All Subjects</option>
+                <option value="">
+                    All Subjects
+                </option>
 
             </select>
 
             <button
+                    type="button"
                     class="btn-primary"
-                    onclick="searchGroups()">
+                    id="searchBtn">
 
-                Search
+                🔍 Search
 
             </button>
 
         </div>
 
 
-        <!-- GROUPS -->
+        <!-- ================= RESULT INFORMATION ================= -->
+
+        <div style="
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            margin:25px 5px 15px 5px;
+        ">
+
+            <div>
+
+                <h2 style="margin:0;">
+                    Available Study Groups
+                </h2>
+
+                <p id="resultCount"
+                   style="margin-top:5px;">
+                    Loading groups...
+                </p>
+
+            </div>
+
+            <a
+                    href="create-group.html"
+                    class="btn-primary"
+                    style="
+                    text-decoration:none;
+                    padding:12px 20px;
+                    display:inline-block;
+                ">
+
+                ➕ Create Group
+
+            </a>
+
+        </div>
+
+
+        <!-- ================= GROUP CONTAINER ================= -->
 
         <section>
 
-            <div id="groupsContainer"
-                 class="group-grid">
+            <div
+                    id="groupsContainer"
+                    class="group-grid">
 
-                <!-- Groups will appear here -->
+                <div style="
+                    text-align:center;
+                    padding:50px;
+                    width:100%;
+                ">
+
+                    <h3>Loading study groups...</h3>
+
+                </div>
 
             </div>
 
@@ -119,7 +183,403 @@
 
 </div>
 
-<script src="js/groups.js"></script>
+
+<!-- =====================================================
+     JAVASCRIPT
+     Everything needed for this page is here.
+     No groups.js required.
+     ===================================================== -->
+
+<script>
+
+    const API = "/api";
+
+    let allGroups = [];
+    let allSubjects = [];
+
+
+    // =====================================================
+    // PAGE LOAD
+    // =====================================================
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        console.log("StudyBuddy Groups page loaded");
+
+        loadSubjects();
+        loadGroups();
+
+        document
+            .getElementById("searchBtn")
+            .addEventListener("click", searchGroups);
+
+    });
+
+
+    // =====================================================
+    // LOAD SUBJECTS
+    // =====================================================
+
+    async function loadSubjects() {
+
+        try {
+
+            const response = await fetch(API + "/subjects");
+
+            console.log("Subjects response:", response.status);
+
+            if (!response.ok) {
+                throw new Error("Unable to load subjects");
+            }
+
+            allSubjects = await response.json();
+
+            const select =
+                document.getElementById("subjectFilter");
+
+            select.innerHTML =
+                '<option value="">All Subjects</option>';
+
+            allSubjects.forEach(function (subject) {
+
+                const option =
+                    document.createElement("option");
+
+                option.value = subject.id;
+
+                option.textContent = subject.name;
+
+                select.appendChild(option);
+
+            });
+
+        }
+
+        catch (error) {
+
+            console.error("Subject error:", error);
+
+        }
+
+    }
+
+
+    // =====================================================
+    // LOAD GROUPS
+    // =====================================================
+
+    async function loadGroups() {
+
+        try {
+
+            const response =
+                await fetch(API + "/groups");
+
+            console.log("Groups response:", response.status);
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Unable to load study groups"
+                );
+
+            }
+
+            allGroups = await response.json();
+
+            console.log("Groups received:", allGroups);
+
+            displayGroups(allGroups);
+
+        }
+
+        catch (error) {
+
+            console.error("Group loading error:", error);
+
+            document.getElementById("resultCount")
+                .textContent = "Error loading groups";
+
+            document.getElementById("groupsContainer")
+                .innerHTML = `
+
+                    <div style="
+                        text-align:center;
+                        padding:50px;
+                        width:100%;
+                    ">
+
+                        <h3>Unable to load study groups</h3>
+
+                        <p>
+                            Make sure Spring Boot is running.
+                        </p>
+
+                        <p>
+                            Check:
+                            <b>http://localhost:8080/api/groups</b>
+                        </p>
+
+                    </div>
+
+                `;
+
+        }
+
+    }
+
+
+    // =====================================================
+    // SEARCH
+    // =====================================================
+
+    function searchGroups() {
+
+        console.log("Search button clicked");
+
+        const searchText =
+            document
+                .getElementById("searchInput")
+                .value
+                .trim()
+                .toLowerCase();
+
+        const subjectId =
+            document
+                .getElementById("subjectFilter")
+                .value;
+
+
+        let filteredGroups = allGroups;
+
+
+        // Search group name
+
+        if (searchText !== "") {
+
+            filteredGroups =
+                filteredGroups.filter(function (group) {
+
+                    return group.groupName &&
+                           group.groupName
+                               .toLowerCase()
+                               .includes(searchText);
+
+                });
+
+        }
+
+
+        // Filter subject
+
+        if (subjectId !== "") {
+
+            filteredGroups =
+                filteredGroups.filter(function (group) {
+
+                    return group.subject &&
+                           String(group.subject.id)
+                           === String(subjectId);
+
+                });
+
+        }
+
+
+        displayGroups(filteredGroups);
+
+    }
+
+
+    // =====================================================
+    // DISPLAY GROUPS
+    // =====================================================
+
+    function displayGroups(groups) {
+
+        const container =
+            document.getElementById("groupsContainer");
+
+        const resultCount =
+            document.getElementById("resultCount");
+
+
+        resultCount.textContent =
+            groups.length +
+            (groups.length === 1
+                ? " study group found"
+                : " study groups found");
+
+
+        if (!groups || groups.length === 0) {
+
+            container.innerHTML = `
+
+                <div style="
+                    text-align:center;
+                    padding:60px 20px;
+                    width:100%;
+                ">
+
+                    <div style="font-size:50px;">
+                        🔍
+                    </div>
+
+                    <h3>
+                        No study groups found
+                    </h3>
+
+                    <p>
+                        Try another search or create a new study group.
+                    </p>
+
+                </div>
+
+            `;
+
+            return;
+
+        }
+
+
+        container.innerHTML = "";
+
+
+        groups.forEach(function (group) {
+
+            const card =
+                document.createElement("div");
+
+            card.className = "group-card";
+
+
+            const subjectName =
+                group.subject
+                    ? group.subject.name
+                    : "Subject";
+
+
+            const creatorName =
+                group.creator
+                    ? group.creator.name
+                    : "Student";
+
+
+            card.innerHTML = `
+
+                <div class="group-card-header">
+
+                    <div class="group-icon">
+                        📚
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            ${escapeHtml(group.groupName)}
+                        </h3>
+
+                        <span>
+                            ${escapeHtml(subjectName)}
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <p>
+
+                    ${escapeHtml(
+                        group.description ||
+                        "No description available."
+                    )}
+
+                </p>
+
+
+                <div class="group-info">
+
+                    <span>
+                        👥 Maximum:
+                        ${group.maxMembers}
+                    </span>
+
+                    <span>
+                        👤 Creator:
+                        ${escapeHtml(creatorName)}
+                    </span>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="btn-primary"
+                    onclick="openGroup(${group.id})">
+
+                    View Group →
+
+                </button>
+
+            `;
+
+
+            container.appendChild(card);
+
+        });
+
+    }
+
+
+    // =====================================================
+    // OPEN GROUP
+    // =====================================================
+
+    function openGroup(id) {
+
+        console.log("Opening group:", id);
+
+        window.location.href =
+            "group-details.html?id=" + id;
+
+    }
+
+
+    // =====================================================
+    // LOGOUT
+    // =====================================================
+
+    function logoutUser(event) {
+
+        event.preventDefault();
+
+        localStorage.removeItem("studentId");
+        localStorage.removeItem("studentName");
+        localStorage.removeItem("studentEmail");
+
+        window.location.href = "index.html";
+
+    }
+
+
+    // =====================================================
+    // PREVENT HTML INJECTION
+    // =====================================================
+
+    function escapeHtml(value) {
+
+        const div =
+            document.createElement("div");
+
+        div.textContent = value;
+
+        return div.innerHTML;
+
+    }
+
+</script>
+
 
 </body>
 </html>

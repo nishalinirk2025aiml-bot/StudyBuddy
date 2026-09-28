@@ -1,197 +1,213 @@
-const API_BASE = "/api";
+const API = "/api";
 
 let allGroups = [];
+let allSubjects = [];
 
-document.addEventListener(
-    "DOMContentLoaded",
-    initializeGroupsPage
-);
+document.addEventListener("DOMContentLoaded", () => {
+    loadSubjects();
+    loadGroups();
+
+    const searchButton = document.getElementById("searchBtn");
+
+    if (searchButton) {
+        searchButton.addEventListener("click", searchGroups);
+    }
+});
 
 
-async function initializeGroupsPage() {
+// ===============================
+// LOAD SUBJECTS
+// ===============================
+async function loadSubjects() {
 
-    await loadSubjects();
+    try {
+        const response = await fetch(`${API}/subjects`);
 
-    await loadGroups();
+        if (!response.ok) {
+            throw new Error("Failed to load subjects");
+        }
+
+        allSubjects = await response.json();
+
+        const subjectSelect = document.getElementById("subjectFilter");
+
+        if (!subjectSelect) return;
+
+        subjectSelect.innerHTML = `<option value="">All Subjects</option>`;
+
+        allSubjects.forEach(subject => {
+
+            const option = document.createElement("option");
+
+            option.value = subject.id;
+            option.textContent = subject.name;
+
+            subjectSelect.appendChild(option);
+        });
+
+    } catch (error) {
+
+        console.error("Subject loading error:", error);
+    }
 }
 
 
-/* =====================================================
-   LOAD GROUPS
-   ===================================================== */
-
+// ===============================
+// LOAD ALL GROUPS
+// ===============================
 async function loadGroups() {
 
     try {
 
-        const response =
-            await fetch(`${API_BASE}/groups`);
+        const response = await fetch(`${API}/groups`);
 
         if (!response.ok) {
-            throw new Error(
-                "Unable to load groups"
-            );
+            throw new Error("Failed to load groups");
         }
 
-        allGroups =
-            await response.json();
+        allGroups = await response.json();
 
         displayGroups(allGroups);
 
     } catch (error) {
 
-        console.error(error);
+        console.error("Group loading error:", error);
 
-        document.getElementById(
-            "groupsContainer"
-        ).innerHTML = `
+        const container = document.getElementById("groupsContainer");
 
-            <div class="empty-message">
-
-                <h3>Unable to load groups</h3>
-
-                <p>
-                    Please make sure Spring Boot
-                    is running.
-                </p>
-
-            </div>
-        `;
+        if (container) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <h3>Unable to load study groups</h3>
+                    <p>Please make sure Spring Boot is running.</p>
+                </div>
+            `;
+        }
     }
 }
 
 
-/* =====================================================
-   LOAD SUBJECTS
-   ===================================================== */
+// ===============================
+// SEARCH GROUPS
+// ===============================
+function searchGroups() {
 
-async function loadSubjects() {
+    const searchInput = document.getElementById("searchInput");
+    const subjectFilter = document.getElementById("subjectFilter");
 
-    try {
+    const searchText = searchInput
+        ? searchInput.value.trim().toLowerCase()
+        : "";
 
-        const response =
-            await fetch(`${API_BASE}/subjects`);
+    const selectedSubject = subjectFilter
+        ? subjectFilter.value
+        : "";
 
-        if (!response.ok) {
-            return;
-        }
+    let filteredGroups = allGroups;
 
-        const subjects =
-            await response.json();
+    // Search by group name
+    if (searchText) {
 
-        const select =
-            document.getElementById(
-                "subjectFilter"
-            );
-
-        subjects.forEach(subject => {
-
-            const option =
-                document.createElement("option");
-
-            option.value = subject.id;
-
-            option.textContent =
-                subject.name;
-
-            select.appendChild(option);
-        });
-
-    } catch (error) {
-
-        console.error(
-            "Subject loading error:",
-            error
+        filteredGroups = filteredGroups.filter(group =>
+            group.groupName &&
+            group.groupName.toLowerCase().includes(searchText)
         );
     }
+
+    // Filter by subject
+    if (selectedSubject) {
+
+        filteredGroups = filteredGroups.filter(group =>
+            group.subject &&
+            String(group.subject.id) === String(selectedSubject)
+        );
+    }
+
+    displayGroups(filteredGroups);
 }
 
 
-/* =====================================================
-   DISPLAY GROUPS
-   ===================================================== */
-
+// ===============================
+// DISPLAY GROUPS
+// ===============================
 function displayGroups(groups) {
 
-    const container =
-        document.getElementById(
-            "groupsContainer"
-        );
+    const container = document.getElementById("groupsContainer");
 
-    container.innerHTML = "";
+    if (!container) {
+        console.error("groupsContainer not found");
+        return;
+    }
 
-    if (groups.length === 0) {
+    if (!groups || groups.length === 0) {
 
         container.innerHTML = `
-
-            <div class="empty-message">
-
-                <h3>No groups found 🔍</h3>
-
-                <p>
-                    Try another search or create
-                    a new study group.
-                </p>
-
+            <div class="empty-state">
+                <div style="font-size:40px;">🔍</div>
+                <h3>No study groups found</h3>
+                <p>Try another search or create a new study group.</p>
             </div>
-
         `;
 
         return;
     }
 
+    container.innerHTML = "";
+
     groups.forEach(group => {
 
-        const card =
-            document.createElement("div");
+        const subjectName =
+            group.subject?.name || "Subject";
+
+        const creatorName =
+            group.creator?.name || "Student";
+
+        const card = document.createElement("div");
 
         card.className = "group-card";
 
         card.innerHTML = `
+            <div class="group-card-header">
 
-            <div class="group-card-icon">
-                📚
+                <div class="group-icon">
+                    📚
+                </div>
+
+                <div>
+                    <h3>${escapeHtml(group.groupName)}</h3>
+
+                    <span class="subject-badge">
+                        ${escapeHtml(subjectName)}
+                    </span>
+                </div>
+
             </div>
 
-            <span class="group-subject">
-
-                ${group.subject?.name ||
-                "Subject"}
-
-            </span>
-
-            <h3>
-                ${group.groupName}
-            </h3>
-
-            <p>
-                ${group.description ||
-                "Let's study together!"}
+            <p class="group-description">
+                ${escapeHtml(
+                    group.description || "No description available."
+                )}
             </p>
 
-            <div class="group-meta">
+            <div class="group-info">
 
                 <span>
-                    👤
-                    ${group.creator?.name ||
-                    "Student"}
+                    👥 Max Members:
+                    ${group.maxMembers}
                 </span>
 
                 <span>
-                    👥
-                    ${group.maxMembers} members
+                    👤 Created by:
+                    ${escapeHtml(creatorName)}
                 </span>
 
             </div>
 
             <button
-                class="join-button"
+                class="view-group-btn"
                 onclick="openGroup(${group.id})">
-
-                View Group
-
+                View Group →
             </button>
-
         `;
 
         container.appendChild(card);
@@ -199,47 +215,9 @@ function displayGroups(groups) {
 }
 
 
-/* =====================================================
-   SEARCH GROUPS
-   ===================================================== */
-
-function searchGroups() {
-
-    const searchText =
-        document
-            .getElementById("searchInput")
-            .value
-            .toLowerCase()
-            .trim();
-
-    const subjectId =
-        document
-            .getElementById("subjectFilter")
-            .value;
-
-    const filtered =
-        allGroups.filter(group => {
-
-            const matchesName =
-                group.groupName
-                    .toLowerCase()
-                    .includes(searchText);
-
-            const matchesSubject =
-                !subjectId ||
-                String(group.subject?.id) ===
-                String(subjectId);
-
-            return (
-                matchesName &&
-                matchesSubject
-            );
-        });
-
-    displayGroups(filtered);
-}
-
-
+// ===============================
+// OPEN GROUP DETAILS
+// ===============================
 function openGroup(groupId) {
 
     window.location.href =
@@ -247,36 +225,14 @@ function openGroup(groupId) {
 }
 
 
-/* Search while typing */
+// ===============================
+// HTML SECURITY
+// ===============================
+function escapeHtml(value) {
 
-document.addEventListener(
-    "DOMContentLoaded",
-    () => {
+    const div = document.createElement("div");
 
-        const input =
-            document.getElementById(
-                "searchInput"
-            );
+    div.textContent = value;
 
-        if (input) {
-
-            input.addEventListener(
-                "input",
-                searchGroups
-            );
-        }
-
-        const subjectFilter =
-            document.getElementById(
-                "subjectFilter"
-            );
-
-        if (subjectFilter) {
-
-            subjectFilter.addEventListener(
-                "change",
-                searchGroups
-            );
-        }
-    }
-);
+    return div.innerHTML;
+}
