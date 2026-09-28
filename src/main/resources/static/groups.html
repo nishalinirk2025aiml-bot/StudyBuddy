@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>StudyBuddy - Find Groups</title>
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/groups.css">
+
+</head>
+
+<body>
+
+<div class="app">
+
+    <aside class="sidebar">
+
+        <div class="brand">
+            <span>📚</span>
+            <h2>StudyBuddy</h2>
+        </div>
+
+        <nav>
+
+            <a href="dashboard.html" class="sidebar-link">
+                🏠 Dashboard
+            </a>
+
+            <a href="groups.html" class="sidebar-link active">
+                🔍 Find Groups
+            </a>
+
+            <a href="my-groups.html" class="sidebar-link">
+                👥 My Groups
+            </a>
+
+            <a href="create-group.html" class="sidebar-link">
+                ➕ Create Group
+            </a>
+
+            <a href="groups.html" class="sidebar-link">
+                📚 Subjects
+            </a>
+
+            <a href="profile.html" class="sidebar-link">
+                👤 Profile
+            </a>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+
+            <a href="index.html" class="sidebar-link">
+                🚪 Logout
+            </a>
+
+        </div>
+
+    </aside>
+
+
+    <main class="main-content">
+
+        <header class="topbar">
+
+            <div>
+                <h1>Find Study Groups 🔍</h1>
+                <p>Find the perfect group to learn together.</p>
+            </div>
+
+        </header>
+
+
+        <!-- SEARCH -->
+
+        <div class="search-box">
+
+            <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="Search study groups...">
+
+            <select id="subjectFilter">
+
+                <option value="">All Subjects</option>
+
+            </select>
+
+            <button
+                    class="btn-primary"
+                    onclick="searchGroups()">
+
+                Search
+
+            </button>
+
+        </div>
+
+
+        <!-- GROUPS -->
+
+        <section>
+
+            <div id="groupsContainer"
+                 class="group-grid">
+
+                <!-- Groups will appear here -->
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<script src="js/groups.js"></script>
+
+</body>
+</html>

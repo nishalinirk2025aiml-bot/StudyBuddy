@@ -1,0 +1,37 @@
+/* =====================================================
+   CREATE GROUP
+   ===================================================== */
+
+.form-card {
+    max-width: 800px;
+
+    background: white;
+
+    border: 1px solid #e5e7eb;
+
+    border-radius: 18px;
+
+    padding: 35px;
+
+    box-shadow:
+        0 10px 30px rgba(79, 70, 229, 0.07);
+}
+
+.form-card .btn-primary {
+    min-width: 200px;
+}
+
+.form-card textarea {
+    min-height: 130px;
+}
+
+@media (max-width: 600px) {
+
+    .form-card {
+        padding: 22px;
+    }
+
+    .form-card .btn-primary {
+        width: 100%;
+    }
+}

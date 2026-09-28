@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>StudyBuddy - My Groups</title>
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/my-groups.css">
+
+</head>
+
+<body>
+
+<div class="app">
+
+    <aside class="sidebar">
+
+        <div class="brand">
+            <span>📚</span>
+            <h2>StudyBuddy</h2>
+        </div>
+
+        <nav>
+
+            <a href="dashboard.html" class="sidebar-link">
+                🏠 Dashboard
+            </a>
+
+            <a href="groups.html" class="sidebar-link">
+                🔍 Find Groups
+            </a>
+
+            <a href="my-groups.html"
+               class="sidebar-link active">
+                👥 My Groups
+            </a>
+
+            <a href="create-group.html"
+               class="sidebar-link">
+                ➕ Create Group
+            </a>
+
+            <a href="profile.html"
+               class="sidebar-link">
+                👤 Profile
+            </a>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+
+            <a href="index.html" class="sidebar-link">
+                🚪 Logout
+            </a>
+
+        </div>
+
+    </aside>
+
+
+    <main class="main-content">
+
+        <header class="topbar">
+
+            <div>
+                <h1>My Study Groups 👥</h1>
+                <p>Groups you are currently participating in.</p>
+            </div>
+
+        </header>
+
+
+        <div id="myGroupsContainer"
+             class="group-grid">
+
+            <!-- Groups loaded here -->
+
+        </div>
+
+    </main>
+
+</div>
+
+<script src="js/my-groups.js"></script>
+
+</body>
+</html>

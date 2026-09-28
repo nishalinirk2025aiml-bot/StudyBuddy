@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>StudyBuddy - Create Group</title>
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/create-group.css">
+
+</head>
+
+<body>
+
+<div class="app">
+
+    <aside class="sidebar">
+
+        <div class="brand">
+            <span>📚</span>
+            <h2>StudyBuddy</h2>
+        </div>
+
+        <nav>
+
+            <a href="dashboard.html" class="sidebar-link">
+                🏠 Dashboard
+            </a>
+
+            <a href="groups.html" class="sidebar-link">
+                🔍 Find Groups
+            </a>
+
+            <a href="my-groups.html" class="sidebar-link">
+                👥 My Groups
+            </a>
+
+            <a href="create-group.html"
+               class="sidebar-link active">
+                ➕ Create Group
+            </a>
+
+            <a href="profile.html" class="sidebar-link">
+                👤 Profile
+            </a>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+
+            <a href="index.html" class="sidebar-link">
+                🚪 Logout
+            </a>
+
+        </div>
+
+    </aside>
+
+
+    <main class="main-content">
+
+        <header class="topbar">
+
+            <div>
+                <h1>Create Study Group ➕</h1>
+                <p>Bring students together and learn collaboratively.</p>
+            </div>
+
+        </header>
+
+
+        <div class="form-card">
+
+            <form id="createGroupForm">
+
+                <div class="form-group">
+
+                    <label>Group Name</label>
+
+                    <input
+                            type="text"
+                            id="groupName"
+                            placeholder="Example: Java Programming Group"
+                            required>
+
+                </div>
+
+
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label>Subject</label>
+
+                        <select id="subjectId" required>
+
+                            <option value="">
+                                Select Subject
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>Maximum Members</label>
+
+                        <input
+                                type="number"
+                                id="maxMembers"
+                                min="1"
+                                placeholder="10"
+                                required>
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Description</label>
+
+                    <textarea
+                            id="description"
+                            rows="5"
+                            placeholder="Describe your study group...">
+                    </textarea>
+
+                </div>
+
+
+                <input
+                        type="hidden"
+                        id="creatorId"
+                        value="1">
+
+
+                <button
+                        type="submit"
+                        class="btn-primary">
+
+                    Create Study Group
+
+                </button>
+
+            </form>
+
+            <p id="groupMessage"></p>
+
+        </div>
+
+    </main>
+
+</div>
+
+<script src="js/create-group.js"></script>
+
+</body>
+</html>

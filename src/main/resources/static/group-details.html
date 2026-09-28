@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>StudyBuddy - Group Details</title>
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/group-details.css">
+
+</head>
+
+<body>
+
+<div class="app">
+
+    <aside class="sidebar">
+
+        <div class="brand">
+            <span>📚</span>
+            <h2>StudyBuddy</h2>
+        </div>
+
+        <nav>
+
+            <a href="dashboard.html" class="sidebar-link">
+                🏠 Dashboard
+            </a>
+
+            <a href="groups.html" class="sidebar-link">
+                🔍 Find Groups
+            </a>
+
+            <a href="my-groups.html" class="sidebar-link">
+                👥 My Groups
+            </a>
+
+            <a href="create-group.html" class="sidebar-link">
+                ➕ Create Group
+            </a>
+
+            <a href="profile.html" class="sidebar-link">
+                👤 Profile
+            </a>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+
+            <a href="index.html" class="sidebar-link">
+                🚪 Logout
+            </a>
+
+        </div>
+
+    </aside>
+
+
+    <main class="main-content">
+
+        <header class="topbar">
+
+            <a href="groups.html" class="back-button">
+                ← Back to Groups
+            </a>
+
+        </header>
+
+
+        <section id="groupDetails">
+
+            <!-- Group details loaded using JavaScript -->
+
+        </section>
+
+
+        <section>
+
+            <div class="section-header">
+
+                <h2>Group Members 👥</h2>
+
+                <button
+                        id="joinButton"
+                        class="btn-primary">
+
+                    Join Group
+
+                </button>
+
+            </div>
+
+
+            <div id="membersContainer">
+
+                <!-- Members loaded here -->
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<script src="js/group-details.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,84 @@
+/* =====================================================
+   PROFILE
+   ===================================================== */
+
+.profile-card {
+    max-width: 700px;
+
+    background: white;
+
+    border: 1px solid #e5e7eb;
+
+    border-radius: 20px;
+
+    padding: 35px;
+
+    box-shadow:
+        0 10px 30px rgba(79, 70, 229, 0.07);
+}
+
+.profile-avatar {
+    width: 90px;
+    height: 90px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    margin: 0 auto 15px;
+
+    background: linear-gradient(
+        135deg,
+        #6366f1,
+        #7c3aed
+    );
+
+    border-radius: 50%;
+
+    color: white;
+
+    font-size: 40px;
+
+    box-shadow:
+        0 10px 25px rgba(99, 102, 241, 0.25);
+}
+
+.profile-card > h2 {
+    text-align: center;
+
+    color: #1e1b4b;
+
+    font-size: 23px;
+}
+
+.profile-card > p {
+    text-align: center;
+
+    color: #6b7280;
+
+    font-size: 13px;
+
+    margin-bottom: 30px;
+}
+
+.profile-card form {
+    border-top: 1px solid #e5e7eb;
+
+    padding-top: 25px;
+}
+
+.profile-card .btn-primary {
+    margin-top: 5px;
+}
+
+@media (max-width: 600px) {
+
+    .profile-card {
+        padding: 22px;
+    }
+
+    .profile-card .btn-primary {
+        width: 100%;
+    }
+}
